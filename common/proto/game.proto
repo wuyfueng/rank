@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package pb;
+
+// 排行榜结构体
+message PbRank {
+  string  Member  = 1; // 元素
+  int64   Score   = 2; // 分数
+  int32   Rank    = 3; // 排名(1,2,3...)
+//  PbRankExtra Extra = 4; // 扩展字段
+}

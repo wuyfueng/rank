@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	pb "github.com/wuyfueng/rank/common/proto"
 	"math"
 	"time"
 
@@ -275,58 +276,87 @@ func (rc *RankConf) Sync(regionId int64, member string, score int64) (err error)
 	return
 }
 
-// NearbyList 排名附近的列表
-func (rc *RankConf) NearbyList(regionId int64, member string, before, after int64) (err error) {
-	// 查询当前排名
-	currentRank, err := rc.GetRank(regionId, member)
-	if err != nil {
-		return
+// TopList 排行榜top列表
+func (rc *RankConf) TopList(regionId int64, n int64) (list []*pb.PbRank, err error) {
+	// 上榜人数
+	if n <= 0 {
+		n = int64(rc.RankingUserNum())
+	}
+	if n <= 0 {
+		n = 100
 	}
 
 	// 获取排行
+	zl := make([]redis.Z, 0, n)
+	if rc.IsPositiveSort() { // 是否正序
+		zl, err = redis_wrapper.Rdb().ZRangeWithScores(context.TODO(), rc.RedisKey(regionId), 0, n-1).Result()
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		zl, err = redis_wrapper.Rdb().ZRevRangeWithScores(context.TODO(), rc.RedisKey(regionId), 0, n-1).Result()
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	for k, v := range zl {
+		member, score, err := ParseUserScoreRet(v, rc.IsTimeScore())
+		if err != nil {
+			return nil, err
+		}
+
+		list = append(list, &pb.PbRank{
+			Member: member,
+			Score:  score,
+			Rank:   int32(k + 1),
+		})
+	}
+
+	return
+}
+
+// NearbyList 排名附近的列表
+func (rc *RankConf) NearbyList(regionId int64, member string, before, after int64) (list []*pb.PbRank, err error) {
+	// 查询当前排名
+	currentRank, err := rc.GetRank(regionId, member)
+	if err != nil {
+		return nil, err
+	}
+
+	// 获取排行
+	currentRank--
 	start := int64(math.Max(0, float64(currentRank-before)))
 	end := currentRank + after
 	zl, err := redis_wrapper.Rdb().ZRevRangeWithScores(context.TODO(), rc.RedisKey(regionId), start, end).Result()
 	if err != nil {
-		return
+		return nil, err
 	}
 
 	for k, v := range zl {
 		mem, score, err := ParseUserScoreRet(v, rc.IsTimeScore())
 		if err != nil {
-			return err
+			return nil, err
 		}
 
-		_ = k
-		_ = mem
-		_ = score
+		pbRank := &pb.PbRank{
+			Member: mem,
+			Score:  score,
+			Rank:   int32(k+1) + int32(start),
+		}
 
-		//pbRank := &gourmetship.PbRank{
-		//	UserID: mem,
-		//	Score:  score,
-		//	Rank:   int32(k+1) + int32(start),
-		//}
-		//
-		//if userId == uid {
-		//	ack.Self = pbRank
-		//} else {
-		//	if ack.Self == nil {
-		//		ack.BeforeList = append(ack.BeforeList, pbRank)
-		//	} else {
-		//		ack.AfterList = append(ack.AfterList, pbRank)
-		//	}
-		//}
+		list = append(list, pbRank)
 	}
 
 	return
 }
 
 // ScoreNearbyList 分数附近的列表
-func (rc *RankConf) ScoreNearbyList(regionId int64, member string, lowPct, highPct float64, count int64) (err error) {
+func (rc *RankConf) ScoreNearbyList(regionId int64, member string, lowPct, highPct float64, count int64) (list []*pb.PbRank, err error) {
 	// 查询分数
 	currentScore, err := redis_wrapper.Rdb().ZScore(context.TODO(), rc.RedisKey(regionId), member).Result()
 	if err != nil {
-		return
+		return nil, err
 	}
 
 	// 获取排行
@@ -336,24 +366,21 @@ func (rc *RankConf) ScoreNearbyList(regionId int64, member string, lowPct, highP
 		Min: fmt.Sprintf("%f", min1), Max: fmt.Sprintf("%f", max1), Offset: 0, Count: count,
 	}).Result()
 	if err != nil {
-		return
+		return nil, err
 	}
 
 	for _, v := range zl {
 		mem, score, err := ParseUserScoreRet(v, rc.IsTimeScore())
 		if err != nil {
-			return err
+			return nil, err
 		}
 
-		_ = mem
-		_ = score
-		//pbRank := &gourmetship.PbRank{
-		//	UserID: uid,
-		//	Score:  score,
-		//	//Rank:   int32(k/2 + 1), // 暂不用返回排名, fix排名计算
-		//}
-		//
-		//ack.List = append(ack.List, pbRank)
+		pbRank := &pb.PbRank{
+			Member: mem,
+			Score:  score,
+		}
+
+		list = append(list, pbRank)
 	}
 
 	return

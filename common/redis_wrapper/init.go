@@ -26,6 +26,14 @@ func Init() {
 	})
 }
 
+// RegisterRdb 测试用
+func RegisterRdb(host string, port int, password string) {
+	rdb = redis.NewClient(&redis.Options{
+		Addr:     fmt.Sprintf("%s:%d", host, port),
+		Password: password,
+	})
+}
+
 func Rdb() *redis.Client {
 	return rdb
 }
