@@ -85,7 +85,7 @@ github.com/spf13/viper/internal/features
 # github.com/subosito/gotenv v1.6.0
 ## explicit; go 1.18
 github.com/subosito/gotenv
-# github.com/wuyfueng/tools v0.0.0-20250101165119-54b69f4a96a2
+# github.com/wuyfueng/tools v0.0.0-20250226152233-a11ede127825
 ## explicit
 github.com/wuyfueng/tools
 # go.uber.org/atomic v1.9.0

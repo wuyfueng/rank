@@ -25,13 +25,14 @@ type RankConf struct {
 	rankingUserNum    int                      // 上榜人数
 	cacheDuration     time.Duration            // 缓存时长
 	isTimely          bool                     // 是否是实时获取排行
+	isDense           bool                     // 是否是密集排名
 }
 
 // 注册排行榜配置
 var (
 	// 类型对应配置
 	rankConfMap = map[constants.RankType]*RankConf{
-		constants.RankTypeScore: {rankType: constants.RankTypeScore, desc: "全服分数排行榜", name: "score", regionType: constants.RankRegionTypeGlobal, isHomePage: true, isPositiveSort: false, isTimeScore: true, isSyncIncr: false, isConcurrencySync: false, cacheUserNum: 100, rankingUserNum: 100, cacheDuration: constants.RankCacheDurationSize, isTimely: true},
+		constants.RankTypeScore: {rankType: constants.RankTypeScore, desc: "全服分数排行榜", name: "score", regionType: constants.RankRegionTypeGlobal, isHomePage: true, isPositiveSort: false, isTimeScore: true, isSyncIncr: false, isConcurrencySync: false, cacheUserNum: 100, rankingUserNum: 100, cacheDuration: constants.RankCacheDurationSize, isTimely: true, isDense: true},
 	}
 )
 
@@ -57,6 +58,7 @@ func (rc *RankConf) RankingUserNum() int                  { return rc.rankingUse
 func (rc *RankConf) CacheDuration() time.Duration         { return rc.cacheDuration }
 func (rc *RankConf) IsNeedCache() bool                    { return rc.cacheDuration > 0 } // 是否需要缓存
 func (rc *RankConf) IsTimely() bool                       { return rc.isTimely }
+func (rc *RankConf) IsDense() bool                        { return rc.isDense }
 
 func (rc *RankConf) spellRedisKey(regionId int64, keyName string) string {
 	switch rc.regionType {
@@ -71,6 +73,9 @@ func (rc *RankConf) spellRedisKey(regionId int64, keyName string) string {
 }
 func (rc *RankConf) RedisKey(regionId int64) (key string) {
 	return rc.spellRedisKey(regionId, "Rank")
+}
+func (rc *RankConf) RedisDenseKey(regionId int64) (key string) {
+	return rc.spellRedisKey(regionId, "RankDense")
 }
 func (rc *RankConf) LikeRedisKey(regionId int64) (key string) {
 	return rc.spellRedisKey(regionId, "RankLike")

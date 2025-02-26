@@ -65,6 +65,8 @@ github.com/subosito/gotenv v1.6.0 h1:9NlTDc1FTs4qu0DDq7AEtTPNw6SVm7uBMsUCUjABIf8
 github.com/subosito/gotenv v1.6.0/go.mod h1:Dk4QP5c2W3ibzajGcXpNraDfq2IrhjMIvMSWPKKo0FU=
 github.com/wuyfueng/tools v0.0.0-20250101165119-54b69f4a96a2 h1:DAtpTqCZFgqMKBgZhM3Z0nTx+PsY4R1zeGFIetE88IM=
 github.com/wuyfueng/tools v0.0.0-20250101165119-54b69f4a96a2/go.mod h1:R27vHPkMEzoKvc+1nx4UjN5Gd8p34RX6BiWxE8M+bNg=
+github.com/wuyfueng/tools v0.0.0-20250226152233-a11ede127825 h1:B40wj+X/uP78xPujXlTmzRq/vA2zT2UaD7hTxZl40TE=
+github.com/wuyfueng/tools v0.0.0-20250226152233-a11ede127825/go.mod h1:R27vHPkMEzoKvc+1nx4UjN5Gd8p34RX6BiWxE8M+bNg=
 go.uber.org/atomic v1.9.0 h1:ECmE8Bn/WFTYwEW/bpKD3M8VtR/zQVbavAoalC1PYyE=
 go.uber.org/atomic v1.9.0/go.mod h1:fEN4uk6kAWBTFdckzkM89CLk9XfWZrxpCo0nPH17wJc=
 go.uber.org/multierr v1.9.0 h1:7fIwc/ZtS0q++VgcfqFDxSBZVv/Xo49/SYnDFupUwlI=

@@ -1,8 +1,10 @@
 package demo
 
 import (
+	"fmt"
 	"log"
-	
+	"math/rand"
+
 	"github.com/wuyfueng/rank/common/constants"
 	pb "github.com/wuyfueng/rank/common/proto"
 	"github.com/wuyfueng/rank/common/rank"
@@ -21,6 +23,17 @@ func init() {
 		log.Panic("GetRankConf is nil")
 		return
 	}
+}
+
+// 创建200个测试数据
+func createTestData() {
+	for i := 1; i <= 200; i++ {
+		err := rc.Sync(0, fmt.Sprintf("%d", i), rand.Int63n(100))
+		if err != nil {
+			log.Println("Sync err", err)
+		}
+	}
+	fmt.Println("创建完成")
 }
 
 // 更新玩家积分
@@ -56,4 +69,12 @@ func getPlayerRankRange(playerId string, before, after int64) (list []*pb.PbRank
 		log.Printf("getPlayerRankRange playerId: %s, before: %d, after: %d, err: %v", playerId, before, after, err)
 	}
 	return
+}
+
+// 创建密集排名
+func createDenseData() {
+	err := rc.CreateDenseData(0)
+	if err != nil {
+		log.Printf("createDenseData err: %v", err)
+	}
 }

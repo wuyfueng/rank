@@ -5,7 +5,7 @@ go 1.23.4
 require (
 	github.com/redis/go-redis/v9 v9.7.1
 	github.com/spf13/viper v1.19.0
-	github.com/wuyfueng/tools v0.0.0-20250101165119-54b69f4a96a2
+	github.com/wuyfueng/tools v0.0.0-20250226152233-a11ede127825
 )
 
 require (
