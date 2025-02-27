@@ -32,7 +32,7 @@ type RankConf struct {
 var (
 	// 类型对应配置
 	rankConfMap = map[constants.RankType]*RankConf{
-		constants.RankTypeScore: {rankType: constants.RankTypeScore, desc: "全服分数排行榜", name: "score", regionType: constants.RankRegionTypeGlobal, isHomePage: true, isPositiveSort: false, isTimeScore: true, isSyncIncr: false, isConcurrencySync: false, cacheUserNum: 100, rankingUserNum: 100, cacheDuration: constants.RankCacheDurationSize, isTimely: true, isDense: true},
+		constants.RankTypeScore: {rankType: constants.RankTypeScore, desc: "全服分数排行榜", name: "score", regionType: constants.RankRegionTypeGlobal, isHomePage: true, isPositiveSort: false, isTimeScore: true, isSyncIncr: false, isConcurrencySync: false, cacheUserNum: 100, rankingUserNum: 100, cacheDuration: constants.RankCacheDurationSize, isTimely: true, isDense: false},
 	}
 )
 
